@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深圳一年级 · 阳光学习工作台</title>
+<style>
+  :root{
+    --purple-1:#7B5CD6;
+    --purple-2:#9B7BE8;
+    --purple-3:#B49BF0;
+    --purple-dark:#4A2E8F;
+    --purple-bg:#F2EEFB;
+    --green-1:#27AE60;
+    --green-2:#3DDC84;
+    --green-3:#6FE9A8;
+    --green-bg:#EAFBF1;
+    --amber:#F5A623;
+    --danger:#E74C3C;
+    --ink:#3A2E5C;
+    --ink-2:#7A6FA0;
+    --card:#ffffff;
+    --line:#E7DFF7;
+    --radius:18px;
+    --shadow:0 8px 24px rgba(122,92,214,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    background:var(--purple-bg);
+    color:var(--ink);
+    font-size:15px;
+  }
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+  input{font-family:inherit;}
+
+  /* ===== 顶部 ===== */
+  header{
+    background:linear-gradient(120deg,#6C4ABF 0%,var(--purple-1) 45%,var(--purple-2) 100%);
+    color:#fff;
+    padding:14px 22px;
+    display:flex;align-items:center;gap:14px;
+    box-shadow:0 4px 18px rgba(108,74,191,.35);
+    position:sticky;top:0;z-index:50;
+    flex-wrap:wrap;
+  }
+  .logo{font-size:22px;font-weight:800;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
+  .logo span{font-size:26px;}
+  .header-right{margin-left:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .name-box{background:rgba(255,255,255,.16);border:1px dashed rgba(255,255,255,.55);border-radius:999px;padding:6px 16px;font-size:17px;font-weight:700;display:flex;align-items:center;gap:6px;}
+  .name-box .edit{font-size:13px;opacity:.9;cursor:pointer;}
+  .name-box:hover{background:rgba(255,255,255,.26);}
+  .pts-pill{background:linear-gradient(120deg,var(--green-1),var(--green-2));border-radius:999px;padding:6px 16px;font-weight:800;font-size:16px;box-shadow:0 4px 12px rgba(39,174,96,.45);display:flex;align-items:center;gap:6px;}
+
+  /* ===== 布局 ===== */
+  .layout{display:flex;min-height:calc(100vh - 66px);}
+  aside{
+    width:222px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);
+    padding:16px 12px 20px;display:flex;flex-direction:column;gap:4px;
+    position:sticky;top:66px;height:calc(100vh - 66px);overflow-y:auto;
+  }
+  .nav-group{font-size:12px;color:var(--ink-2);padding:10px 10px 4px;font-weight:700;letter-spacing:1px;}
+  .nav-item{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;
+    color:var(--ink);font-size:15px;font-weight:600;transition:.15s;text-align:left;width:100%;
+  }
+  .nav-item:hover{background:var(--purple-bg);}
+  .nav-item.active{background:linear-gradient(120deg,var(--purple-1),var(--purple-2));color:#fff;box-shadow:0 6px 14px rgba(123,92,214,.35);}
+  .nav-item .ico{font-size:20px;width:26px;text-align:center;}
+  .nav-item .prog{margin-left:auto;font-size:12px;font-weight:700;opacity:.85;white-space:nowrap;}
+  .nav-item.active .prog{opacity:1;}
+  .side-foot{margin-top:auto;padding-top:14px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:8px;}
+  .side-btn{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;font-size:13px;font-weight:700;color:var(--purple-dark);background:var(--purple-bg);transition:.15s;justify-content:center;}
+  .side-btn:hover{background:#E4DAF7;}
+  .side-btn.green{background:var(--green-bg);color:var(--green-1);}
+  .side-btn.green:hover{background:#D7F5E4;}
+
+  /* ===== 主区 ===== */
+  main{flex:1;padding:22px 26px 60px;min-width:0;}
+  .page-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+  .page-title{font-size:26px;font-weight:800;display:flex;align-items:center;gap:10px;}
+  .page-title .ico{font-size:30px;}
+  .book-tag{margin:2px 0 18px;background:var(--purple-bg);color:var(--purple-dark);border:1px solid #DDD0F5;padding:8px 14px;border-radius:12px;font-size:13px;line-height:1.6;}
+  .book-tag b{opacity:.85;}
+
+  /* 卡片通用 */
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;}
+  .grid{display:grid;gap:16px;}
+  .g-home{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
+  .g-shop{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));}
+
+  .hero{
+    background:linear-gradient(120deg,var(--purple-1),var(--purple-2));
+    color:#fff;border-radius:22px;padding:26px 28px;box-shadow:var(--shadow);
+    margin-bottom:18px;position:relative;overflow:hidden;
+  }
+  .hero:after{content:"🎈";position:absolute;right:26px;top:14px;font-size:44px;opacity:.5;}
+  .hero h1{font-size:24px;margin-bottom:6px;}
+  .hero p{opacity:.92;font-size:15px;}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:18px;}
+  .stat{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:16px 18px;display:flex;flex-direction:column;gap:4px;}
+  .stat .k{font-size:13px;color:var(--ink-2);}
+  .stat .v{font-size:28px;font-weight:800;}
+  .stat.green .v{color:var(--green-1);}
+  .stat.purple .v{color:var(--purple-1);}
+  .stat.amber .v{color:var(--amber);}
+
+  h3.sec{margin:22px 0 12px;font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;}
+  .sec small{font-weight:600;color:var(--ink-2);font-size:13px;}
+
+  /* ===== 打卡 ===== */
+  .checkin-card{
+    background:linear-gradient(120deg,#fdf6e7,#fef9ef);
+    border:2px solid #F7E3B5;border-radius:20px;padding:20px 22px;
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:18px;
+  }
+  .checkin-main{flex:1;min-width:220px;}
+  .checkin-main .t{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px;}
+  .checkin-main .d{font-size:13px;color:var(--ink-2);margin-top:4px;}
+  .flame{font-size:34px;}
+  .btn-checkin{
+    background:linear-gradient(120deg,var(--green-1),var(--green-2));color:#fff;
+    font-size:18px;font-weight:800;padding:14px 30px;border-radius:999px;
+    box-shadow:0 8px 18px rgba(39,174,96,.4);transition:.15s;
+  }
+  .btn-checkin:hover{transform:translateY(-2px);}
+  .btn-checkin.done{background:#C9C4DA;box-shadow:none;cursor:default;}
+  .streak-pill{background:#fff;border:2px solid #F7E3B5;border-radius:999px;padding:8px 18px;font-weight:800;color:#B97E0C;display:flex;align-items:center;gap:6px;font-size:15px;}
+
+  /* ===== 任务卡 ===== */
+  .unit{margin-bottom:22px;}
+  .unit-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .unit-name{font-size:17px;font-weight:800;color:var(--purple-dark);}
+  .unit-stat{font-size:13px;font-weight:700;color:var(--ink-2);}
+  .bar{flex:1;min-width:120px;height:10px;background:#EEE8FA;border-radius:999px;overflow:hidden;}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green-1),var(--green-2));border-radius:999px;transition:width .3s;}
+  .task{
+    display:flex;align-items:flex-start;gap:14px;background:#fff;border:1px solid var(--line);
+    border-radius:16px;padding:14px 16px;margin-bottom:10px;box-shadow:0 3px 10px rgba(122,92,214,.08);
+    transition:.15s;cursor:pointer;
+  }
+  .task:hover{border-color:var(--purple-3);transform:translateX(2px);}
+  .task.done{background:var(--green-bg);border-color:#B9EBD0;}
+  .box{
+    width:28px;height:28px;border-radius:50%;border:3px solid var(--purple-3);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:15px;color:transparent;margin-top:2px;transition:.2s;
+  }
+  .task.done .box{background:var(--green-1);border-color:var(--green-1);color:#fff;}
+  .t-body{flex:1;min-width:0;}
+  .t-name{font-size:15px;font-weight:700;}
+  .t-desc{font-size:13px;color:var(--ink-2);margin-top:3px;line-height:1.5;}
+  .t-pts{
+    flex-shrink:0;background:var(--purple-bg);color:var(--purple-dark);font-weight:800;font-size:13px;
+    border-radius:999px;padding:6px 12px;margin-top:2px;
+  }
+  .task.done .t-pts{background:var(--green-1);color:#fff;}
+
+  /* ===== 家务 ===== */
+  .chore{position:relative;}
+  .chore .mgmt{flex-shrink:0;display:flex;gap:6px;margin-top:2px;}
+  .chore .mgmt button{
+    width:32px;height:32px;border-radius:10px;font-size:14px;transition:.15s;
+    background:#F0EDF8;color:var(--purple-dark);display:flex;align-items:center;justify-content:center;
+  }
+  .chore .mgmt button:hover{background:#E4DAF7;}
+  .chore .mgmt button.del{color:var(--danger);}
+  .chore.done .mgmt button{background:rgba(255,255,255,.75);}
+  .chore-ico{font-size:20px;}
+  .btn-add-chore{
+    border:2px dashed var(--green-3);color:var(--green-1);background:#fff;
+    border-radius:16px;padding:14px 18px;margin-top:4px;font-size:15px;font-weight:800;transition:.15s;
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  }
+  .btn-add-chore:hover{background:var(--green-bg);}
+
+  /* ===== 学科概览（首页）===== */
+  .sub-card{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:16px;cursor:pointer;transition:.15s;border:2px solid transparent;}
+  .sub-card:hover{border-color:var(--purple-3);transform:translateY(-2px);}
+  .sub-card .s-ico{font-size:30px;}
+  .sub-card .s-name{font-size:16px;font-weight:800;margin-top:8px;}
+  .sub-card .s-prog{font-size:13px;color:var(--ink-2);margin-top:4px;}
+  .mini-bar{height:8px;background:#EEE8FA;border-radius:999px;overflow:hidden;margin-top:8px;}
+  .mini-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green-1),var(--green-2));}
+
+  /* ===== 商店 ===== */
+  .shop-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px;}
+  .big-pts{font-size:20px;font-weight:800;color:var(--green-1);}
+  .reward{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:10px;border:2px solid transparent;position:relative;}
+  .reward .r-ico{font-size:38px;}
+  .reward .r-name{font-size:16px;font-weight:800;line-height:1.35;}
+  .reward .r-cost{font-weight:800;color:var(--amber);font-size:15px;}
+  .btn-redeem{
+    margin-top:auto;background:linear-gradient(120deg,var(--purple-1),var(--purple-2));color:#fff;
+    font-weight:800;border-radius:12px;padding:10px;font-size:15px;transition:.15s;
+  }
+  .btn-redeem:hover{filter:brightness(1.08);}
+  .btn-redeem:disabled{background:#D9D4E6;cursor:not-allowed;}
+  .reward .del{
+    position:absolute;top:8px;right:10px;color:var(--danger);font-size:14px;font-weight:800;
+    display:none;background:none;
+  }
+  .reward.custom:hover .del{display:block;}
+  .btn-add-reward{
+    border:2px dashed var(--purple-3);color:var(--purple-dark);background:#fff;
+    border-radius:18px;min-height:150px;font-size:15px;font-weight:800;transition:.15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  }
+  .btn-add-reward:hover{background:var(--purple-bg);}
+  .rec-list{list-style:none;}
+  .rec-list li{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px dashed var(--line);font-size:14px;}
+  .rec-list li:last-child{border-bottom:none;}
+  .rec-list .when{margin-left:auto;color:var(--ink-2);font-size:12px;}
+  .rec-list .pts-tag{font-weight:800;color:var(--green-1);}
+  .rec-list .pts-tag.minus{color:var(--danger);}
+
+  /* ===== 动态 ===== */
+  .feed{list-style:none;}
+  .feed li{display:flex;gap:10px;padding:9px 2px;border-bottom:1px dashed var(--line);font-size:14px;align-items:baseline;}
+  .feed li:last-child{border-bottom:none;}
+  .feed .emo{flex-shrink:0;}
+  .feed .when{margin-left:auto;color:var(--ink-2);font-size:12px;white-space:nowrap;}
+
+  /* ===== 弹窗 ===== */
+  .modal-mask{position:fixed;inset:0;background:rgba(58,46,92,.45);display:flex;align-items:center;justify-content:center;z-index:99;padding:20px;}
+  .modal{background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:100%;max-width:400px;padding:24px;animation:pop .18s ease;}
+  @keyframes pop{from{transform:scale(.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .modal h3{font-size:19px;margin-bottom:14px;color:var(--purple-dark);}
+  .modal label{display:block;font-size:13px;font-weight:700;color:var(--ink-2);margin:12px 0 6px;}
+  .modal input[type=text],.modal input[type=number]{
+    width:100%;border:2px solid var(--line);border-radius:12px;padding:11px 14px;font-size:16px;outline:none;
+  }
+  .modal input:focus{border-color:var(--purple-2);}
+  .modal-actions{display:flex;gap:10px;margin-top:20px;}
+  .modal-actions button{flex:1;padding:12px;border-radius:12px;font-weight:800;font-size:15px;}
+  .btn-ok{background:linear-gradient(120deg,var(--purple-1),var(--purple-2));color:#fff;}
+  .btn-cancel{background:#F0EDF8;color:var(--ink-2);}
+
+  /* ===== toast ===== */
+  #toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);z-index:120;
+    background:var(--purple-dark);color:#fff;padding:13px 26px;border-radius:999px;font-weight:700;font-size:15px;
+    box-shadow:0 10px 30px rgba(74,46,143,.4);opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(-8px);}
+  #toast.good{background:linear-gradient(120deg,var(--green-1),var(--green-2));}
+
+  .empty{color:var(--ink-2);padding:30px;text-align:center;}
+  .foot-note{margin-top:30px;color:var(--ink-2);font-size:12px;line-height:1.8;border-top:1px dashed var(--line);padding-top:14px;}
+
+  /* ===== 响应式 ===== */
+  @media (max-width:760px){
+    header{padding:12px 14px;}
+    .layout{flex-direction:column;}
+    aside{
+      width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;
+      border-right:none;border-bottom:1px solid var(--line);padding:10px;gap:6px;
+    }
+    .nav-group,.side-foot{display:none;}
+    .nav-item{width:auto;padding:8px 12px;font-size:14px;}
+    main{padding:16px;}
+    .hero{padding:20px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span>🌈</span> 阳光学习工作台</div>
+  <div class="header-right">
+    <div class="name-box" id="nameBox" title="点击修改名字">
+      <span id="nameText">宝贝</span><span class="edit">✏️</span>
+    </div>
+    <div class="pts-pill" id="ptsPill">⭐ <span id="ptsNum">0</span> 积分</div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside id="sideNav"></aside>
+  <main id="main"></main>
+</div>
+
+<div id="modalWrap"></div>
+<div id="toast"></div>
+<input type="file" id="importFile" accept=".json,application/json" style="display:none">
+
+<script>
+"use strict";
+/* =========================================================
+   深圳小学一年级 · 阳光学习工作台
+   教材版本依据（深圳小学一年级上册主要教材）：
+   - 语文：统编版（部编版）一年级上册（2024 秋新版）· 人民教育出版社
+   - 数学：北师大版一年级上册（2024 新版）· 北京师范大学出版社（深圳主流）
+   - 英语：深港朗文版 Primary English 一年级上册（深圳主流；部分学校用沪教牛津版）
+   - 科学：粤教粤科版一年级上册（2024 秋版）· 广东教育出版社 / 广东科技出版社
+   - 道德与法治：统编版一年级上册（2024 秋新版）· 人民教育出版社
+   - 音乐：花城版《走进音乐世界》（艺术·音乐）一年级上册 · 广东教育出版社 / 花城出版社
+   - 美术：岭南版《艺术·美术》一年级上册（2024 新版）· 岭南美术出版社
+   - 体育：国家课程《体育与健康》一年级课程内容（深圳各校统一，无固定课本）
+   - 综合：综合实践活动 / 劳动课程（深圳按国家课程方案开设）
+   ========================================================= */
+
+var APP_KEY = "sz_g1_workbench_v1";
+
+/* ---------------- 教材目录数据 ---------------- */
+var SUBJECTS = [
+  {
+    id:"yuwen", name:"语文", icon:"📖", tag:"📚",
+    book:"统编版（部编版）语文一年级上册（2024 秋新版）",
+    src:"目录依据人民教育出版社统编版 2024 新版教材",
+    units:[
+      {name:"起始单元 · 我上学了", tasks:[
+        {n:"认识新朋友", d:"大胆说出自己的名字，认识 3 位新同学", p:3},
+        {n:"学唱《上学歌》", d:"和爸爸妈妈一起唱一唱", p:2},
+        {n:"聊聊我的学校", d:"说说学校里有哪些地方，你最喜欢哪里", p:3}
+      ]},
+      {name:"第一单元 · 识字（1）", tasks:[
+        {n:"认读《天地人》", d:"会认“天、地、人”等字，能组词", p:5},
+        {n:"背诵《金木水火土》", d:"正确、流利地背诵儿歌", p:5},
+        {n:"认识《口耳目手足》", d:"会认“口、耳、目、手、足”并指出身体部位", p:5},
+        {n:"认识《日月山川》", d:"会认“日、月、山、川”等象形字", p:5}
+      ]},
+      {name:"第二单元 · 汉语拼音（一）", tasks:[
+        {n:"学习 a o e", d:"会读、会写单韵母 a o e", p:4},
+        {n:"学习 i u ü y w", d:"会读 i u ü，认识声母 y w", p:4},
+        {n:"学习 b p m f", d:"会拼读 b—a→ba 等音节", p:4},
+        {n:"学习 d t n l", d:"会拼读 d t n l 与单韵母组成的音节", p:4}
+      ]},
+      {name:"第三单元 · 汉语拼音（二）", tasks:[
+        {n:"学习 g k h", d:"会拼读 g k h 与单韵母的音节", p:4},
+        {n:"学习 j q x", d:"记住 j q x 与 ü 相拼去点规则", p:4},
+        {n:"学习 z c s / zh ch sh r", d:"区分平舌音与翘舌音", p:4},
+        {n:"认识整体认读音节 y w", d:"会读 yi、wu、yu 等整体认读音节", p:4}
+      ]},
+      {name:"第四单元 · 汉语拼音（三）", tasks:[
+        {n:"学习 ai ei ui", d:"读准复韵母 ai ei ui 及音节", p:4},
+        {n:"学习 ao ou iu", d:"读准复韵母 ao ou iu 及音节", p:4},
+        {n:"学习 ie üe er", d:"读准 ie üe er，认识特殊韵母 er", p:4},
+        {n:"学习前后鼻韵母", d:"区分 an en in un ün 与 ang eng ing ong", p:4}
+      ]},
+      {name:"第五单元 · 阅读（一）", tasks:[
+        {n:"朗读《秋天》", d:"有感情地朗读，认识“秋、气”等生字", p:5},
+        {n:"朗读《江南》", d:"读准字音，感受江南之美", p:5},
+        {n:"朗读《雪地里的小画家》", d:"背诵喜欢的段落", p:5},
+        {n:"朗读《四季》", d:"学做小诗人，仿说一句四季的话", p:5}
+      ]},
+      {name:"第六单元 · 识字（2）", tasks:[
+        {n:"学习《对韵歌》", d:"背诵《对韵歌》，感受对仗之美", p:5},
+        {n:"学习《日月明》", d:"了解会意字：日+月=明", p:5},
+        {n:"学习《小书包》", d:"认识文具生字，整理自己的小书包", p:5},
+        {n:"学习《升国旗》", d:"会读会背，懂得尊敬国旗", p:5}
+      ]},
+      {name:"第七单元 · 阅读（二）", tasks:[
+        {n:"朗读《小小的船》", d:"有感情地朗读并背诵", p:5},
+        {n:"朗读《影子》", d:"读准字音，玩一玩影子的游戏", p:5},
+        {n:"朗读《两件宝》", d:"懂得双手和大脑都是宝", p:5}
+      ]},
+      {name:"第八单元 · 阅读（三）", tasks:[
+        {n:"朗读《比尾巴》", d:"有感情地朗读，认识动物尾巴的特点", p:5},
+        {n:"朗读《乌鸦喝水》", d:"读好故事，说说乌鸦的办法", p:5},
+        {n:"朗读《雨点儿》", d:"分角色朗读,感受雨点的旅程", p:5}
+      ]}
+    ]
+  },
+  {
+    id:"math", name:"数学", icon:"🔢", tag:"➕",
+    book:"北师大版数学一年级上册（2024 新版）",
+    src:"目录依据北京师范大学出版社 2024 新版教材（深圳小学主流使用）",
+    units:[
+      {name:"一、生活中的数", tasks:[
+        {n:"快乐的家园", d:"数一数：1~10 各数，数身边的物品", p:5},
+        {n:"认识 0（小猫钓鱼）", d:"理解 0 表示“一个也没有”", p:4},
+        {n:"文具与数一数", d:"规范书写 1~10，会认会写", p:5},
+        {n:"比多少：快乐的午餐", d:"用一一对应比较多少", p:4},
+        {n:"认识 > < =", d:"在“动物乐园”里比较数的大小", p:4}
+      ]},
+      {name:"二、比较", tasks:[
+        {n:"比大小、比多少", d:"“过生日”时比一比蛋糕的大小", p:4},
+        {n:"比高矮、比长短", d:"“下课啦”排队比高矮长短", p:4},
+        {n:"比轻重（跷跷板）", d:"用手掂一掂，比较物体轻重", p:4}
+      ]},
+      {name:"三、加与减（一）", tasks:[
+        {n:"认识加法", d:"“一共有多少”：3+2=5 等 5 以内加法", p:5},
+        {n:"认识减法", d:"“还剩下多少”：5 以内减法", p:5},
+        {n:"练习 6、7 的加减", d:"猜数游戏：6、7 的加减法口算", p:5},
+        {n:"练习 8、9 的加减", d:"背土豆、跳绳：8、9 的加减法", p:5},
+        {n:"练习 10 的加减法", d:"小鸡吃食：10 的加减法口算", p:5},
+        {n:"连加连减", d:"乘车：学会连加、连减、加减混合", p:5}
+      ]},
+      {name:"四、分类", tasks:[
+        {n:"整理房间", d:"按一种标准给物品分类", p:4},
+        {n:"一起来分类", d:"尝试按不同标准分类", p:4}
+      ]},
+      {name:"五、位置与顺序", tasks:[
+        {n:"认识前后、上下", d:"说一说自己的前面后面、上面下面", p:4},
+        {n:"认识左右", d:"分清自己的左手和右手", p:4},
+        {n:"教室里的位置", d:"用方位词介绍教室里的东西", p:4}
+      ]},
+      {name:"六、认识图形", tasks:[
+        {n:"物体分类", d:"认识长方体、正方体、圆柱、球", p:5},
+        {n:"你说我摆", d:"搭一搭立体图形，说说用了什么", p:4}
+      ]},
+      {name:"七、加与减（二）", tasks:[
+        {n:"古人计数", d:"认识 11~20 各数，理解“十”", p:5},
+        {n:"搭积木", d:"十几加几、减几的简单计算", p:5},
+        {n:"9 加几（有几瓶牛奶）", d:"学习凑十法：9+4=13", p:5},
+        {n:"8 加几、7 加几", d:"用凑十法计算 8+、7+ 的算式", p:5}
+      ]},
+      {name:"数学好玩 · 淘气的校园", tasks:[
+        {n:"校园里的数学", d:"在校园里找一找：数、图形、方位", p:4},
+        {n:"数学小游戏", d:"和同学或家人玩一个数学游戏", p:4}
+      ]},
+      {name:"八、认识钟表", tasks:[
+        {n:"小明的一天", d:"认识整时：7 时、8 时……", p:5},
+        {n:"认识半时", d:"认识几时半，拨一拨钟表", p:5}
+      ]}
+    ]
+  },
+  {
+    id:"english", name:"英语", icon:"🇬🇧", tag:"ABC",
+    book:"沪教版《英语·口语交际》一年级上册（上海教育出版社）",
+    src:"目录依据上海教育出版社沪教版新版（2024 审定）口语交际模块：6 个基础单元 + 2 个项目式单元（深圳小学现行使用；单元标题 U1-U3 有出处，U4-U6 按教学计划主题编排）",
+    units:[
+      {name:"Unit 1 · What is your family like？", tasks:[
+        {n:"认识家人单词", d:"学会 father、mother、grandpa、grandma 等家庭成员英文", p:5},
+        {n:"介绍我的家人", d:"用 This is my ... 向家人介绍家人", p:5},
+        {n:"家庭树", d:"和家人画一棵家庭树，标上英文名", p:4}
+      ]},
+      {name:"Unit 2 · How are you today？", tasks:[
+        {n:"情绪单词", d:"学会 happy、sad、angry、tired 等情绪英文", p:5},
+        {n:"问候问答", d:"用 How are you？/ I'm ... 互相问候", p:5},
+        {n:"情绪表情卡", d:"画 4 张表情卡并用英文说出情绪", p:4}
+      ]},
+      {name:"Unit 3 · My schoolbag", tasks:[
+        {n:"文具单词", d:"学会 schoolbag、pencil、ruler、eraser、book 等", p:5},
+        {n:"Pack my schoolbag", d:"整理书包时大声说 Pack my pencils / books ...", p:5},
+        {n:"礼貌借还用语", d:"学会 Use my pencil. / Thank you. 等礼貌用语", p:4}
+      ]},
+      {name:"Unit 4 · 我会做什么（动作能力）", tasks:[
+        {n:"动作单词", d:"学会 sing、dance、read、draw、run 等能力动词", p:5},
+        {n:"我能做问答", d:"用 Can you ...？/ Yes, I can. 进行问答", p:5},
+        {n:"才艺小展示", d:"用 I can ... 说出 3 件自己会做的事", p:4}
+      ]},
+      {name:"Unit 5 · 可爱的动物", tasks:[
+        {n:"动物单词", d:"认识 cat、dog、bird、rabbit、panda 等动物英文", p:5},
+        {n:"喜欢的动物", d:"用 My favourite animal is ... 表达喜好", p:5},
+        {n:"动物分类", d:"把动物分成家养和野生两类并说出英文", p:4}
+      ]},
+      {name:"Unit 6 · 五彩的颜色", tasks:[
+        {n:"颜色单词", d:"认识 red、orange、yellow、green、blue 等 7 种颜色", p:5},
+        {n:"颜色问答", d:"用 What colour ...？/ It's ... 问答身边颜色", p:5},
+        {n:"颜色找一找", d:"在家里找出 7 种不同颜色的物品", p:4}
+      ]},
+      {name:"Project 1 · 口语小项目", tasks:[
+        {n:"家庭主题展示", d:"整合 Unit 1-3，用英语介绍家人和书包", p:8},
+        {n:"合作对话", d:"和小伙伴合作完成一段简单对话表演", p:6}
+      ]},
+      {name:"Project 2 · 口语小项目", tasks:[
+        {n:"能力主题展示", d:"整合 Unit 4-6，展示自己会做的事和喜欢的颜色", p:8},
+        {n:"自主小展示", d:"自选主题完成两分钟英语小展示", p:6}
+      ]},
+      {name:"轻松复习", tasks:[
+        {n:"认读字母", d:"跟着 Letters 单元认读 26 个字母", p:4},
+        {n:"日常用语", d:"复习 Daily expressions 日常问候用语", p:4},
+        {n:"单词小卡", d:"复习 Word list 核心单词做单词小卡片", p:4}
+      ]}
+    ]
+  },
+  {
+    id:"science", name:"科学", icon:"🔬", tag:"🌱",
+    book:"粤教粤科版科学一年级上册（2024 秋版）",
+    src:"目录依据广东教育出版社 / 广东科技出版社 2024 新版教材",
+    units:[
+      {name:"第一单元 · 认识常见的物体", tasks:[
+        {n:"观察物体", d:"用眼睛看、耳朵听、手摸，观察一件物体", p:5},
+        {n:"说说物体的特征", d:"从形状、颜色、软硬等方面描述物体", p:5},
+        {n:"找一找身边的物体", d:"在家里找出 5 件不同材质的物体", p:4}
+      ]},
+      {name:"第二单元 · 认识生物", tasks:[
+        {n:"认识我自己", d:"了解头、躯干、四肢，知道身体各部分的本领", p:5},
+        {n:"动物是生物", d:"观察一种小动物，说说它吃什么、怎么动", p:5},
+        {n:"植物是生物", d:"种一棵小植物，观察它的生长", p:6}
+      ]},
+      {name:"第三单元 · 观察天气", tasks:[
+        {n:"认识天气现象", d:"能说出晴、阴、雨、雪等天气的样子", p:5},
+        {n:"记录一周天气", d:"每天观察并记录天气（晴天画☀️）", p:6},
+        {n:"天气与生活", d:"说说天气变化对穿衣、出行的影响", p:4}
+      ]}
+    ]
+  },
+  {
+    id:"daofa", name:"道法", icon:"🌻", tag:"❤️",
+    book:"统编版道德与法治一年级上册（2024 秋新版）",
+    src:"目录依据人民教育出版社统编版 2024 新版教材",
+    units:[
+      {name:"第一单元 · 我是小学生啦", tasks:[
+        {n:"开开心心上学去", d:"说说上学真开心的一件事", p:4},
+        {n:"我向国旗敬个礼", d:"升国旗时立正、敬礼，唱国歌", p:4},
+        {n:"这是我们的校园", d:"认识校园的教室、操场、卫生间等", p:4},
+        {n:"平平安安回家来", d:"牢记放学路线和安全注意事项", p:4}
+      ]},
+      {name:"第二单元 · 过好校园生活", tasks:[
+        {n:"老师，您好！", d:"见到老师主动问好", p:4},
+        {n:"拉拉手，交朋友", d:"主动认识一位新朋友", p:4},
+        {n:"上课了，好好学", d:"上课坐端正，认真倾听", p:4},
+        {n:"课余生活真丰富", d:"参加一项有益的课间活动", p:3}
+      ]},
+      {name:"第三单元 · 养成良好习惯", tasks:[
+        {n:"作息有规律", d:"坚持早睡早起，按时上学", p:4},
+        {n:"吃饭有讲究", d:"不挑食、不浪费，饭前洗手", p:4},
+        {n:"对人有礼貌", d:"会说“请、谢谢、对不起”", p:4},
+        {n:"玩也有学问", d:"和同学友好相处，不争抢玩具", p:3}
+      ]},
+      {name:"第四单元 · 我们讲文明", tasks:[
+        {n:"我们小点儿声", d:"在公共场合不大声喧哗", p:4},
+        {n:"人人爱护公物", d:"爱护桌椅、图书和公共设施", p:4},
+        {n:"我们不乱扔", d:"垃圾扔进垃圾桶，学会分类", p:4},
+        {n:"大家排好队", d:"排队时守秩序、不插队", p:4}
+      ]}
+    ]
+  },
+  {
+    id:"yinmei", name:"音美", icon:"🎵", tag:"🎶🎨",
+    book:"花城版《走进音乐世界》+ 岭南版《艺术·美术》一年级上册",
+    src:"音乐目录依据花城出版社 / 广东教育出版社花城版教材，美术目录依据岭南美术出版社 2024 新版教材（均为深圳小学主流使用）",
+    units:[
+      {name:"🎵 音乐 · 校园之歌", tasks:[
+        {n:"唱《我今天上学喽》", d:"学唱第 1 课，感受上学喜悦", p:5},
+        {n:"唱《去同学家》", d:"学唱第 2 课，和小伙伴分享", p:4}
+      ]},
+      {name:"🎵 音乐 · 我爱我家", tasks:[
+        {n:"唱《爱我的家》", d:"学唱第 3 课，唱给爸爸妈妈听", p:5}
+      ]},
+      {name:"🎵 音乐 · 国旗飘飘", tasks:[
+        {n:"唱《国旗国旗真美丽》", d:"学唱第 4 课，边唱边敬礼", p:5}
+      ]},
+      {name:"🎵 音乐 · 动物世界", tasks:[
+        {n:"唱《在农场里》", d:"学唱第 5 课，模仿小动物叫声", p:5}
+      ]},
+      {name:"🎵 音乐 · 做个好孩子", tasks:[
+        {n:"唱《好孩子要诚实》", d:"学唱第 6 课，做个诚实的孩子", p:5}
+      ]},
+      {name:"🎵 音乐 · 音乐与语文", tasks:[
+        {n:"唱《汉语拼音歌》", d:"学唱第 7 课，边唱边学拼音", p:4}
+      ]},
+      {name:"🎵 音乐 · 音乐与数学", tasks:[
+        {n:"唱《还有几只金凤凰》", d:"学唱第 8 课，边唱边数数", p:4}
+      ]},
+      {name:"🎵 音乐 · 冬天与新年", tasks:[
+        {n:"唱《祝你圣诞快乐》", d:"学唱第 9 课，感受节日气氛", p:4},
+        {n:"欣赏迎春乐曲", d:"听一听第 10 课迎春乐曲，说说感受", p:4}
+      ]},
+      {name:"🎨 美术 · 第一单元 幸福成长", tasks:[
+        {n:"看图讲故事", d:"第 1 课：欣赏开国大典图片，讲一讲", p:4},
+        {n:"我来上学啦", d:"第 2 课：画一画自己上学的样子", p:5},
+        {n:"开心的校园", d:"第 3~7 课：画教室、运动场、自我介绍路线", p:5}
+      ]},
+      {name:"🎨 美术 · 第二单元 团结友爱", tasks:[
+        {n:"独特的自己", d:"第 8 课：对着镜子画自画像", p:5},
+        {n:"同桌小伙伴", d:"第 9 课：画一画你的好朋友", p:5},
+        {n:"有趣的影子", d:"第 10 课：用手电筒玩影子造型", p:4}
+      ]},
+      {name:"🎨 美术 · 第三单元 经典永流传", tasks:[
+        {n:"铭记中国符号", d:"第 12 课：认识并画一画中国结、长城等", p:5},
+        {n:"认识通用标识", d:"第 13 课：认识安全出口等常见标识", p:4}
+      ]},
+      {name:"🎨 美术 · 第四单元 象形会意传文脉", tasks:[
+        {n:"星空的故事", d:"第 14 课：画一画你心中的星空", p:5},
+        {n:"天空的颜色", d:"第 15 课：观察并画出天空的色彩", p:4},
+        {n:"我的太空梦", d:"第 16 课：设计一艘自己的太空飞船", p:5}
+      ]},
+      {name:"🎨 美术 · 第五单元 笔墨游戏真有趣", tasks:[
+        {n:"毛笔真神奇", d:"第 17 课：试着用毛笔蘸水写字作画", p:5},
+        {n:"线条变化多", d:"第 18 课：用直线、曲线、波浪线创作", p:5}
+      ]}
+    ]
+  },
+  {
+    id:"tiyu", name:"体育", icon:"⚽", tag:"💪",
+    book:"《体育与健康》一年级课程内容",
+    src:"体育无统一固定课本，依据国家义务教育课程方案与深圳各校体育课安排",
+    units:[
+      {name:"队列与队形", tasks:[
+        {n:"练习立正稍息", d:"听口令立正、稍息，站姿端正", p:4},
+        {n:"排好队", d:"学会向右看齐、原地转", p:4}
+      ]},
+      {name:"广播体操", tasks:[
+        {n:"学做广播体操", d:"跟做《七彩阳光》中的 2 节动作", p:5},
+        {n:"眼保健操", d:"每天坚持做眼保健操", p:3}
+      ]},
+      {name:"跳绳小达人", tasks:[
+        {n:"连续跳绳 10 个", d:"练习并脚跳，争取连续跳 10 个", p:5},
+        {n:"花样尝试", d:"尝试单脚跳、开合跳", p:4}
+      ]},
+      {name:"跑跳小游戏", tasks:[
+        {n:"30 米快跑", d:"跑一跑、比一比，注意安全", p:4},
+        {n:"单脚跳/双脚跳", d:"玩跳房子等跳跃游戏", p:4}
+      ]},
+      {name:"球类初体验", tasks:[
+        {n:"拍皮球 20 下", d:"练习连续拍球", p:5},
+        {n:"滚球、抛接球", d:"和家人玩抛接球游戏", p:4}
+      ]},
+      {name:"安全与健康", tasks:[
+        {n:"运动前热身", d:"养成运动前热身、运动后拉伸的习惯", p:3},
+        {n:"安全小卫士", d:"知道运动时不推挤、注意场地安全", p:3}
+      ]}
+    ]
+  },
+  {
+    id:"zonghe", name:"综合", icon:"🧩", tag:"🛠️",
+    book:"综合实践活动 / 劳动课程",
+    src:"综合实践活动与劳动课无统一固定课本，依据国家课程方案与深圳小学开设内容编制",
+    units:[
+      {name:"生活小能手", tasks:[
+        {n:"自己穿衣系鞋带", d:"独立完成穿衣、系鞋带、叠被子", p:5},
+        {n:"整理书桌", d:"每天把自己的书桌整理整齐", p:4}
+      ]},
+      {name:"家务小帮手", tasks:[
+        {n:"帮做一件家务", d:"扫地、擦桌、摆碗筷任选一样", p:5},
+        {n:"学洗小袜子", d:"学着自己洗袜子、小手帕", p:4}
+      ]},
+      {name:"安全小卫士", tasks:[
+        {n:"牢记家庭信息", d:"记住家长电话和家庭住址", p:4},
+        {n:"安全知识闯关", d:"知道红灯停绿灯行、不跟陌生人走", p:4}
+      ]},
+      {name:"自然小观察", tasks:[
+        {n:"观察一种植物", d:"观察并说出植物的变化", p:5},
+        {n:"认识小昆虫", d:"在公园观察蚂蚁、蝴蝶等小昆虫", p:4}
+      ]},
+      {name:"手工小创意", tasks:[
+        {n:"做一件小手工", d:"用彩纸做折纸或贴画", p:5},
+        {n:"变废为宝", d:"用废旧材料做一个创意作品", p:6}
+      ]}
+    ]
+  }
+];
+
+var DEFAULT_REWARDS = [
+  {id:"r1", ico:"🎖️", name:"奖励贴纸一枚", cost:20},
+  {id:"r2", ico:"📺", name:"看动画片 30 分钟", cost:50},
+  {id:"r3", ico:"🍦", name:"冰淇淋一个", cost:60},
+  {id:"r4", ico:"🧩", name:"拼图/小玩具一个", cost:120},
+  {id:"r5", ico:"📚", name:"新绘本一本", cost:150},
+  {id:"r6", ico:"🚀", name:"周末公园亲子出游", cost:200},
+  {id:"r7", ico:"🎡", name:"去游乐场玩一次", cost:300},
+  {id:"r8", ico:"🏆", name:"超级大奖励（任意心愿）", cost:500}
+];
+
+var DEFAULT_CHORES = [
+  {id:"h1", ico:"🧹", name:"整理书桌", pts:2},
+  {id:"h2", ico:"🛏️", name:"叠被子铺床", pts:3},
+  {id:"h3", ico:"🍽️", name:"摆碗筷 / 收碗筷", pts:3},
+  {id:"h4", ico:"💧", name:"给花浇水", pts:2},
+  {id:"h5", ico:"🗑️", name:"帮忙倒垃圾", pts:3},
+  {id:"h6", ico:"👕", name:"收叠自己的衣服", pts:4},
+  {id:"h7", ico:"🧽", name:"擦桌子", pts:2},
+  {id:"h8", ico:"🥟", name:"帮做家务小帮手", pts:4}
+];
+
+/* ---------------- 状态 ---------------- */
+function freshState(){
+  return {
+    version:1,
+    childName:"宝贝",
+    points:0,
+    totalEarned:0,
+    tasks:{},            // taskKey -> true
+    checkins:{},         // 'YYYY-MM-DD' -> true
+    streak:0,
+    lastCheckin:null,
+    rewards:JSON.parse(JSON.stringify(DEFAULT_REWARDS)),
+    redeemed:[],         // {name, cost, date}
+    history:[],          // {type, text, pts, when}
+    custom:0,
+    chores:JSON.parse(JSON.stringify(DEFAULT_CHORES)), // 家务列表 [{id,ico,name,pts}]
+    choreDone:{},        // choreId -> 'YYYY-MM-DD'（当天完成标记）
+    choreCustom:0
+  };
+}
+var state = load();
+
+function load(){
+  try{
+    var raw = localStorage.getItem(APP_KEY);
+    if(!raw) return freshState();
+    var s = JSON.parse(raw);
+    var f = freshState();
+    if(!s || typeof s !== "object") return f;
+    // 合并默认值，保证结构完整
+    for(var k in f){ if(!(k in s)) s[k] = (k==="rewards") ? JSON.parse(JSON.stringify(DEFAULT_REWARDS)) : f[k]; }
+    if(!Array.isArray(s.rewards) || s.rewards.length===0) s.rewards = JSON.parse(JSON.stringify(DEFAULT_REWARDS));
+    return s;
+  }catch(e){ return freshState(); }
+}
+function save(){ try{ localStorage.setItem(APP_KEY, JSON.stringify(state)); }catch(e){ toast("保存失败：存储空间不足", false); } }
+
+function todayStr(){
+  var d = new Date();
+  return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+}
+function ydayStr(t){
+  var parts = t.split("-");
+  var d = new Date(+parts[0], +parts[1]-1, +parts[2]-1);
+  return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+}
+function pad(n){ return n<10 ? "0"+n : ""+n; }
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function taskKey(subId, ui, ti){ return subId + ":" + ui + ":" + ti; }
+function subOf(subId){ for(var i=0;i<SUBJECTS.length;i++){ if(SUBJECTS[i].id===subId) return SUBJECTS[i]; } return null; }
+function subStats(sub){
+  var total=0, done=0, pts=0, got=0;
+  sub.units.forEach(function(u, ui){
+    u.tasks.forEach(function(t, ti){
+      total++; pts += t.p;
+      if(state.tasks[taskKey(sub.id, ui, ti)]){ done++; got += t.p; }
+    });
+  });
+  return {total:total, done:done, pts:pts, got:got};
+}
+function greeting(){
+  var h = new Date().getHours();
+  if(h<6) return "夜深了";
+  if(h<12) return "早上好";
+  if(h<14) return "中午好";
+  if(h<18) return "下午好";
+  return "晚上好";
+}
+
+/* ---------------- 视图 ---------------- */
+var currentView = "home";
+
+function renderAll(){
+  renderSide();
+  renderHeader();
+  renderMain();
+}
+
+function renderHeader(){
+  document.getElementById("nameText").textContent = state.childName;
+  document.getElementById("ptsNum").textContent = state.points;
+}
+
+function renderSide(){
+  var nav = document.getElementById("sideNav");
+  var h = "";
+  h += '<div class="nav-group">学习</div>';
+  h += '<button class="nav-item' + (currentView==="home" ? " active" : "") + '" data-go="home"><span class="ico">🏠</span> 今日首页</button>';
+  SUBJECTS.forEach(function(sub){
+    var st = subStats(sub);
+    var doneTxt = st.done===st.total ? "✅" : (st.done>0 ? st.done+"/"+st.total : "");
+    h += '<button class="nav-item' + (currentView===sub.id ? " active" : "") + '" data-go="' + sub.id + '"><span class="ico">' + sub.icon + '</span> ' + sub.name + '<span class="prog">' + doneTxt + '</span></button>';
+  });
+  h += '<div class="nav-group" style="margin-top:10px;">生活</div>';
+  h += '<button class="nav-item' + (currentView==="chores" ? " active" : "") + '" data-go="chores"><span class="ico">🧹</span> 日常家务</button>';
+  h += '<div class="nav-group" style="margin-top:10px;">奖励</div>';
+  h += '<button class="nav-item' + (currentView==="shop" ? " active" : "") + '" data-go="shop"><span class="ico">🎁</span> 阳光兑换商店</button>';
+  h += '<div class="side-foot">';
+  h += '<button class="side-btn" data-act="export">💾 导出备份</button>';
+  h += '<button class="side-btn green" data-act="import">📥 导入备份</button>';
+  h += '</div>';
+  nav.innerHTML = h;
+  nav.querySelectorAll("[data-go]").forEach(function(b){ b.onclick = function(){ currentView = b.getAttribute("data-go"); renderAll(); }; });
+  nav.querySelectorAll("[data-act]").forEach(function(b){ b.onclick = function(){ act(b.getAttribute("data-act")); }; });
+}
+
+function renderMain(){
+  var main = document.getElementById("main");
+  if(currentView === "home") main.innerHTML = viewHome();
+  else if(currentView === "shop") main.innerHTML = viewShop();
+  else if(currentView === "chores") main.innerHTML = viewChores();
+  else main.innerHTML = viewSubject(currentView);
+  bindMain();
+}
+
+/* ---------- 首页 ---------- */
+function viewHome(){
+  var st = {total:0, done:0, pts:0, got:0};
+  SUBJECTS.forEach(function(sub){
+    var s = subStats(sub);
+    st.total += s.total; st.done += s.done; st.pts += s.pts; st.got += s.got;
+  });
+  var checkedToday = !!state.checkins[todayStr()];
+  var h = "";
+  h += '<div class="hero"><h1>' + greeting() + '，' + esc(state.childName) + ' ！🎉</h1><p>今天也要加油哦，完成小任务，攒积分换大奖励！</p></div>';
+
+  h += '<div class="stat-grid">';
+  h += '<div class="stat purple"><span class="k">我的积分</span><span class="v">⭐ ' + state.points + '</span></div>';
+  h += '<div class="stat green"><span class="k">已完成任务</span><span class="v">' + st.done + ' / ' + st.total + '</span></div>';
+  h += '<div class="stat amber"><span class="k">连续打卡</span><span class="v">🔥 ' + state.streak + ' 天</span></div>';
+  h += '<div class="stat"><span class="k">累计获得积分</span><span class="v">' + state.totalEarned + '</span></div>';
+  h += '</div>';
+
+  // 打卡
+  h += '<div class="checkin-card">';
+  h += '<div class="flame">' + (checkedToday ? "✅" : "🔥") + '</div>';
+  h += '<div class="checkin-main"><div class="t">每日打卡</div><div class="d">每天打卡 +10 分，连续每满 7 天额外奖励 +20 分 🎁</div></div>';
+  h += '<div class="streak-pill">已连续 ' + state.streak + ' 天</div>';
+  if(checkedToday){ h += '<button class="btn-checkin done" disabled>今天已打卡 ✓</button>'; }
+  else{ h += '<button class="btn-checkin" data-act="checkin">打卡 +10分</button>'; }
+  h += '</div>';
+
+  // 学科进度
+  h += '<h3 class="sec">📚 学科任务 <small>点卡片进入学习</small></h3>';
+  h += '<div class="grid g-home">';
+  SUBJECTS.forEach(function(sub){
+    var s = subStats(sub);
+    var pct = s.total===0 ? 0 : Math.round(s.done*100/s.total);
+    h += '<div class="sub-card" data-go="' + sub.id + '">';
+    h += '<div class="s-ico">' + sub.icon + '</div>';
+    h += '<div class="s-name">' + sub.name + '</div>';
+    h += '<div class="s-prog">完成 ' + s.done + ' / ' + s.total + ' 个任务 · 已得 ' + s.got + ' 分</div>';
+    h += '<div class="mini-bar"><i style="width:' + pct + '%"></i></div>';
+    h += '</div>';
+  });
+  h += '</div>';
+
+  // 最近动态
+  if(state.history.length){
+    h += '<h3 class="sec">🕘 最近记录</h3><ul class="feed">';
+    var feed = state.history.slice(-6).reverse();
+    feed.forEach(function(item){
+      var emo = item.type==="task" ? "✅" : (item.type==="checkin" ? "🔥" : (item.type==="redeem" ? "🎁" : (item.type==="chore" ? "🧹" : "⭐")));
+      var ptsTxt = item.pts ? '<span class="pts-tag">+' + item.pts + "</span>" : "";
+      h += '<li><span class="emo">' + emo + '</span> ' + esc(item.text) + " " + ptsTxt + '<span class="when">' + esc(item.when) + '</span></li>';
+    });
+    h += "</ul>";
+  }
+  h += footNote();
+  return h;
+}
+
+/* ---------- 学科页 ---------- */
+function viewSubject(subId){
+  var sub = subOf(subId);
+  if(!sub) return "<div class='empty'>没有这个学科哦</div>";
+  var h = "";
+  h += '<div class="page-head"><div class="page-title"><span class="ico">' + sub.icon + '</span> ' + sub.name + '</div></div>';
+  h += '<div class="book-tag"><b>📖 ' + esc(sub.book) + '</b><br>' + esc(sub.src) + '</div>';
+
+  var st = subStats(sub);
+  h += '<div class="stat-grid">';
+  h += '<div class="stat purple"><span class="k">本学科任务</span><span class="v">' + st.done + ' / ' + st.total + '</span></div>';
+  h += '<div class="stat green"><span class="k">已获得积分</span><span class="v">' + st.got + ' / ' + st.pts + '</span></div>';
+  h += '</div>';
+
+  sub.units.forEach(function(u, ui){
+    h += '<div class="unit"><div class="unit-head"><span class="unit-name">' + esc(u.name) + '</span>';
+    var doneUnit = 0;
+    u.tasks.forEach(function(t, ti){ if(state.tasks[taskKey(sub.id, ui, ti)]) doneUnit++; });
+    var pct = u.tasks.length===0 ? 0 : Math.round(doneUnit*100/u.tasks.length);
+    h += '<span class="unit-stat">' + doneUnit + ' / ' + u.tasks.length + '</span>';
+    h += '<div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+    u.tasks.forEach(function(t, ti){
+      var key = taskKey(sub.id, ui, ti);
+      var done = !!state.tasks[key];
+      h += '<div class="task' + (done ? " done" : "") + '" data-task="' + key + '" data-pts="' + t.p + '">';
+      h += '<div class="box">✓</div>';
+      h += '<div class="t-body"><div class="t-name">' + esc(t.n) + '</div><div class="t-desc">' + esc(t.d) + '</div></div>';
+      h += '<div class="t-pts">+' + t.p + ' 分</div>';
+      h += '</div>';
+    });
+    h += "</div>";
+  });
+  h += footNote();
+  return h;
+}
+
+/* ---------- 家务页 ---------- */
+function viewChores(){
+  var t = todayStr();
+  var doneToday = 0, gotToday = 0, allPts = 0;
+  state.chores.forEach(function(c){
+    allPts += c.pts;
+    if(state.choreDone[c.id] === t){ doneToday++; gotToday += c.pts; }
+  });
+  var h = "";
+  h += '<div class="page-head"><div class="page-title"><span class="ico">🧹</span> 日常家务</div></div>';
+  h += '<div class="book-tag"><b>💪 家务小达人</b><br>帮忙做家务也能攒积分哦！点一下卡片，完成了就点亮它，积分会自动到账～ 长按或爸爸妈妈可以用 ✏️ 🗑 帮你编辑、添加家务。</div>';
+
+  h += '<div class="stat-grid">';
+  h += '<div class="stat green"><span class="k">今天完成家务</span><span class="v">' + doneToday + ' / ' + state.chores.length + '</span></div>';
+  h += '<div class="stat purple"><span class="k">今天家务积分</span><span class="v">' + gotToday + ' 分</span></div>';
+  h += '</div>';
+
+  state.chores.forEach(function(c){
+    var done = state.choreDone[c.id] === t;
+    h += '<div class="task chore' + (done ? " done" : "") + '" data-chore="' + c.id + '">';
+    h += '<div class="box">✓</div>';
+    h += '<div class="t-body"><div class="t-name"><span class="chore-ico">' + esc(c.ico) + '</span> ' + esc(c.name) + '</div>';
+    h += '<div class="t-desc">' + (done ? "今天已完成，真能干！✿" : "完成后点一下就可以领积分啦") + '</div></div>';
+    h += '<div class="t-pts">+' + c.pts + ' 分</div>';
+    h += '<div class="mgmt"><button data-ce="' + c.id + '" title="编辑家务">✏️</button><button class="del" data-cd="' + c.id + '" title="删除家务">🗑</button></div>';
+    h += '</div>';
+  });
+  h += '<button class="btn-add-chore" data-act="addChore"><span style="font-size:22px">＋</span> 添加家务</button>';
+  h += footNote();
+  return h;
+}
+
+/* ---------- 商店 ---------- */
+function viewShop(){
+  var h = "";
+  h += '<div class="page-head"><div class="page-title"><span class="ico">🎁</span> 阳光兑换商店</div></div>';
+  h += '<div class="shop-head"><div class="big-pts">我的积分：⭐ ' + state.points + ' 分</div></div>';
+  h += '<div class="grid g-shop">';
+  state.rewards.forEach(function(r){
+    var can = state.points >= r.cost;
+    h += '<div class="reward' + (r.custom ? " custom" : "") + '" data-rid="' + r.id + '">';
+    if(r.custom) h += '<button class="del" data-del="' + r.id + '" title="删除此奖励">✕</button>';
+    h += '<div class="r-ico">' + esc(r.ico) + '</div>';
+    h += '<div class="r-name">' + esc(r.name) + '</div>';
+    h += '<div class="r-cost">⭐ ' + r.cost + ' 分</div>';
+    h += '<button class="btn-redeem" data-redeem="' + r.id + '"' + (can ? "" : " disabled") + '>' + (can ? "兑换" : "积分不足") + '</button>';
+    h += '</div>';
+  });
+  h += '<button class="btn-add-reward" data-act="addReward"><span style="font-size:30px">＋</span> 添加奖励</button>';
+  h += '</div>';
+
+  if(state.redeemed.length){
+    h += '<h3 class="sec">📦 兑换记录</h3><ul class="rec-list">';
+    state.redeemed.slice().reverse().slice(0,10).forEach(function(r){
+      h += '<li><span>🎁</span> 兑换了《' + esc(r.name) + '》<span class="pts-tag minus">-' + r.cost + ' 分</span><span class="when">' + esc(r.date) + '</span></li>';
+    });
+    h += '</ul>';
+  }
+  h += '<div class="book-tag" style="margin-top:16px;"><b>💡 小贴士</b><br>奖励要爸爸妈妈同意后才能真正兑现哦！家长可以点“添加奖励”自定义专属奖励。</div>';
+  h += footNote();
+  return h;
+}
+
+function footNote(){
+  var d = new Date();
+  return '<div class="foot-note">深圳一年级 · 阳光学习工作台（本地离线版）— 数据仅保存在本浏览器，点击左下角可“导出备份”。教材版本以学校和实际课本为准，积分规则可自行约定。</div>';
+}
+
+/* ---------- 事件绑定 ---------- */
+function bindMain(){
+  var main = document.getElementById("main");
+  main.querySelectorAll("[data-go]").forEach(function(el){
+    el.onclick = function(){ currentView = el.getAttribute("data-go"); renderAll(); };
+  });
+  main.querySelectorAll('[data-task]').forEach(function(el){
+    el.onclick = function(){
+      var key = el.getAttribute("data-task");
+      var pts = +el.getAttribute("data-pts");
+      var checked = !state.tasks[key];
+      toggleTask(key, pts, checked);
+    };
+  });
+  main.querySelectorAll("[data-act]").forEach(function(el){
+    el.onclick = function(){ act(el.getAttribute("data-act")); };
+  });
+  main.querySelectorAll("[data-redeem]").forEach(function(el){
+    el.onclick = function(){ redeem(el.getAttribute("data-redeem")); };
+  });
+  main.querySelectorAll("[data-del]").forEach(function(el){
+    el.onclick = function(ev){ ev.stopPropagation(); removeReward(el.getAttribute("data-del")); };
+  });
+  main.querySelectorAll("[data-chore]").forEach(function(el){
+    el.onclick = function(){ toggleChore(el.getAttribute("data-chore")); };
+  });
+  main.querySelectorAll("[data-ce]").forEach(function(el){
+    el.onclick = function(ev){ ev.stopPropagation(); editChore(el.getAttribute("data-ce")); };
+  });
+  main.querySelectorAll("[data-cd]").forEach(function(el){
+    el.onclick = function(ev){ ev.stopPropagation(); removeChore(el.getAttribute("data-cd")); };
+  });
+}
+
+/* ---------- 逻辑 ---------- */
+function toggleTask(key, pts, checked){
+  if(checked){
+    if(state.tasks[key]) return;
+    state.tasks[key] = true;
+    state.points += pts;
+    state.totalEarned += pts;
+    pushHistory("task", "完成任务，+" + pts + " 分", pts);
+    toast("太棒了！+" + pts + " 分 🎉", true);
+  }else{
+    if(!state.tasks[key]) return;
+    delete state.tasks[key];
+    state.points = Math.max(0, state.points - pts);
+    pushHistory("task", "取消任务，-" + pts + " 分", 0);
+    toast("已取消任务，-" + pts + " 分");
+  }
+  save(); renderAll();
+}
+
+function toggleChore(id){
+  var c = null;
+  state.chores.forEach(function(x){ if(x.id === id) c = x; });
+  if(!c) return;
+  var t = todayStr();
+  if(state.choreDone[id] === t){
+    delete state.choreDone[id];
+    state.points = Math.max(0, state.points - c.pts);
+    pushHistory("chore", "取消家务「" + c.name + "」", 0);
+    toast("已取消家务，-" + c.pts + " 分");
+  }else{
+    state.choreDone[id] = t;
+    state.points += c.pts;
+    state.totalEarned += c.pts;
+    pushHistory("chore", "完成家务「" + c.name + "」，+" + c.pts + " 分", c.pts);
+    toast("家务完成！+" + c.pts + " 分 🧹", true);
+  }
+  save(); renderAll();
+}
+
+function choreModal(title, okText, icoVal, nmVal, ptsVal, onOk){
+  openModal(title,
+    '<label>图标（表情符号）</label><input type="text" id="mIco" maxlength="4" value="' + esc(icoVal) + '">' +
+    '<label>家务名称</label><input type="text" id="mName" maxlength="12" value="' + esc(nmVal) + '" placeholder="例如：扫地">' +
+    '<label>完成后得几分（1-20）</label><input type="number" id="mPts" min="1" max="20" value="' + (+ptsVal || "") + '">',
+    okText, function(){
+      var ico = document.getElementById("mIco").value.trim() || "🧹";
+      var nm = document.getElementById("mName").value.trim();
+      var ps = parseInt(document.getElementById("mPts").value, 10);
+      if(!nm){ toast("请填写家务名称"); return; }
+      if(isNaN(ps) || ps < 1 || ps > 20){ toast("积分需为 1-20 的数字"); return; }
+      onOk({ico:ico.slice(0,4), name:nm, pts:ps});
+    });
+}
+
+function addChore(){
+  choreModal("添加家务", "添加", "🧹", "", "", function(v){
+    state.choreCustom++;
+    var id = "hc" + state.choreCustom;
+    state.chores.push({id:id, ico:v.ico, name:v.name, pts:v.pts});
+    pushHistory("other", "添加家务「" + v.name + "」", 0);
+    save(); renderAll(); closeModal();
+    toast("家务已添加 🧹", true);
+  });
+}
+
+function editChore(id){
+  var c = null;
+  state.chores.forEach(function(x){ if(x.id === id) c = x; });
+  if(!c) return;
+  choreModal("编辑家务", "保存", c.ico, c.name, c.pts, function(v){
+    c.ico = v.ico; c.name = v.name; c.pts = v.pts;
+    pushHistory("other", "编辑家务「" + c.name + "」", 0);
+    save(); renderAll(); closeModal();
+    toast("家务已保存 ✏️", true);
+  });
+}
+
+function removeChore(id){
+  var c = null;
+  state.chores.forEach(function(x){ if(x.id === id) c = x; });
+  if(!c) return;
+  if(!confirm("删除家务「" + c.name + "」？")) return;
+  state.chores = state.chores.filter(function(x){ return x.id !== id; });
+  delete state.choreDone[id];
+  save(); renderAll();
+  toast("已删除家务");
+}
+
+function doCheckin(){
+  var t = todayStr();
+  if(state.checkins[t]){ toast("今天已经打过卡啦，明天再来！"); return; }
+  state.checkins[t] = true;
+  var y = ydayStr(t);
+  state.streak = (state.lastCheckin === y) ? state.streak + 1 : 1;
+  state.lastCheckin = t;
+  var gain = 10;
+  var bonus = false;
+  if(state.streak % 7 === 0){ gain += 20; bonus = true; }
+  state.points += gain;
+  state.totalEarned += gain;
+  pushHistory("checkin", "打卡成功，已连续 " + state.streak + " 天", gain);
+  save(); renderAll();
+  if(bonus){ toast("连续打卡 " + state.streak + " 天！奖励 +20 分 🎊", true); }
+  else{ toast("打卡成功！+10 分，连续 " + state.streak + " 天 🔥", true); }
+}
+
+function redeem(id){
+  var r = null;
+  state.rewards.forEach(function(x){ if(x.id === id) r = x; });
+  if(!r) return;
+  if(state.points < r.cost){ toast("积分还不够哦，继续加油！"); return; }
+  if(!confirm("确定用 " + r.cost + " 分兑换「" + r.name + "」吗？")) return;
+  state.points -= r.cost;
+  state.redeemed.push({name:r.name, cost:r.cost, date:todayStr()});
+  pushHistory("redeem", "兑换「" + r.name + "」", 0);
+  save(); renderAll();
+  toast("兑换成功！记得找爸爸妈妈兑现哦 🎁", true);
+}
+
+function pushHistory(type, text, pts){
+  var d = new Date();
+  var when = (d.getMonth()+1) + "月" + d.getDate() + "日 " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  state.history.push({type:type, text:text, pts:pts, when:when});
+  if(state.history.length > 200) state.history = state.history.slice(-200);
+}
+
+/* ---------- 名称 / 奖励 ---------- */
+function openModal(title, body, okText, onOk){
+  var wrap = document.getElementById("modalWrap");
+  wrap.innerHTML = '<div class="modal-mask"><div class="modal"><h3>' + esc(title) + '</h3><div class="m-body">' + body + '</div>' +
+    '<div class="modal-actions"><button class="btn-cancel" id="mCancel">取消</button><button class="btn-ok" id="mOk">' + esc(okText) + '</button></div></div></div>';
+  wrap.querySelector("#mCancel").onclick = function(){ wrap.innerHTML = ""; };
+  wrap.querySelector("#mOk").onclick = function(){ onOk(); };
+  var inp = wrap.querySelector("input");
+  if(inp) setTimeout(function(){ inp.focus(); }, 50);
+}
+function editName(){
+  openModal("修改宝贝名字", '<label>孩子名字</label><input type="text" id="mName" maxlength="12" value="' + esc(state.childName) + '">',
+    "保存", function(){
+      var v = document.getElementById("mName").value.trim();
+      if(!v){ toast("名字不能为空"); return; }
+      state.childName = v.slice(0,12);
+      pushHistory("other", "修改名字为「" + state.childName + "」", 0);
+      save(); renderAll(); closeModal();
+      toast("名字改好啦 ✏️", true);
+    });
+}
+function act(name){
+  if(name === "checkin") doCheckin();
+  else if(name === "export") exportData();
+  else if(name === "import") document.getElementById("importFile").click();
+  else if(name === "addReward") addReward();
+  else if(name === "addChore") addChore();
+}
+function addReward(){
+  openModal("添加奖励",
+    '<label>奖励名称</label><input type="text" id="mName" maxlength="20" placeholder="例如：全家去露营">' +
+    '<label>需要积分</label><input type="number" id="mCost" min="5" max="9999" placeholder="例如：100">',
+    "添加", function(){
+      var nm = document.getElementById("mName").value.trim();
+      var cs = parseInt(document.getElementById("mCost").value, 10);
+      if(!nm){ toast("请填写奖励名称"); return; }
+      if(isNaN(cs) || cs < 5){ toast("积分需为 ≥5 的数字"); return; }
+      state.custom++;
+      var id = "c" + state.custom;
+      state.rewards.unshift({id:id, ico:"🌟", name:nm, cost:cs, custom:true});
+      pushHistory("other", "添加奖励「" + nm + "」", 0);
+      save(); renderAll(); closeModal();
+      toast("奖励已添加 🌟", true);
+    });
+}
+function removeReward(id){
+  var r = null;
+  state.rewards.forEach(function(x){ if(x.id === id) r = x; });
+  if(!r || !r.custom) return;
+  if(!confirm("删除奖励「" + r.name + "」？")) return;
+  state.rewards = state.rewards.filter(function(x){ return x.id !== id; });
+  save(); renderAll();
+  toast("已删除");
+}
+function closeModal(){ document.getElementById("modalWrap").innerHTML = ""; }
+
+/* ---------- 导出 / 导入 ---------- */
+function exportData(){
+  var d = new Date();
+  var fn = "学习工作台备份-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()) + ".json";
+  var blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = fn;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  toast("备份文件已导出 💾", true);
+}
+document.getElementById("importFile").addEventListener("change", function(){
+  var file = this.files && this.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(){
+    try{
+      var obj = JSON.parse(reader.result);
+      if(!obj || typeof obj !== "object" || !("tasks" in obj)) throw new Error("bad");
+      if(!confirm("导入将覆盖当前所有数据，确定继续吗？")) return;
+      var f2 = freshState();
+      for(var k in f2){ if(!(k in obj)) obj[k] = f2[k]; }
+      if(!Array.isArray(obj.rewards) || obj.rewards.length===0) obj.rewards = f2.rewards;
+      state = obj;
+      save(); renderAll();
+      toast("导入成功！数据已恢复 ✅", true);
+    }catch(e){ toast("导入失败：文件格式不正确"); }
+  };
+  reader.readAsText(file);
+  this.value = "";
+});
+
+/* ---------- toast ---------- */
+var toastTimer = null;
+function toast(msg, good){
+  var el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = good ? "show good" : "show";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.className = ""; }, 2200);
+}
+
+/* ---------- 启动 ---------- */
+document.getElementById("nameBox").onclick = editName;
+renderAll();
+</script>
+</body>
+</html>
