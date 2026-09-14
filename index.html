@@ -212,9 +212,16 @@
   .rec-list{list-style:none;}
   .rec-list li{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px dashed var(--line);font-size:14px;}
   .rec-list li:last-child{border-bottom:none;}
-  .rec-list .when{margin-left:auto;color:var(--ink-2);font-size:12px;}
+  .rec-list .when{margin-left:auto;color:var(--ink-2);font-size:12px;white-space:nowrap;}
   .rec-list .pts-tag{font-weight:800;color:var(--green-1);}
   .rec-list .pts-tag.minus{color:var(--danger);}
+  .rec-list .r-status{font-size:12px;padding:2px 8px;border-radius:8px;font-weight:700;margin-left:6px;}
+  .rec-list .r-status.pending{background:#FFF3E0;color:#E65100;}
+  .rec-list .r-status.done{background:#E8F5E9;color:#2E7D32;}
+  .rec-list .r-note{color:var(--ink-2);font-size:12px;margin-top:2px;display:block;}
+  .rec-list .r-del{background:transparent;border:none;color:var(--danger);font-size:18px;cursor:pointer;padding:0 4px;margin-left:4px;line-height:1;}
+  .rec-list .r-del:hover{background:var(--danger);color:#fff;border-radius:6px;}
+  .rec-list .r-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 
   /* ===== 动态 ===== */
   .feed{list-style:none;}
@@ -690,6 +697,15 @@ function load(){
     // 合并默认值，保证结构完整
     for(var k in f){ if(!(k in s)) s[k] = (k==="rewards") ? JSON.parse(JSON.stringify(DEFAULT_REWARDS)) : f[k]; }
     if(!Array.isArray(s.rewards) || s.rewards.length===0) s.rewards = JSON.parse(JSON.stringify(DEFAULT_REWARDS));
+    // 兼容旧兑换记录：补充 id/time/status/note
+    if(Array.isArray(s.redeemed)){
+      s.redeemed.forEach(function(r, i){
+        if(!r.id) r.id = "r_old_" + i + "_" + Date.now();
+        if(!r.time) r.time = "";
+        if(!r.status) r.status = "pending";
+        if(!("note" in r)) r.note = "";
+      });
+    }
     return s;
   }catch(e){ return freshState(); }
 }
@@ -741,6 +757,8 @@ function renderAll(){
 function renderHeader(){
   document.getElementById("nameText").textContent = state.childName;
   document.getElementById("ptsNum").textContent = state.points;
+  var addBtn = document.querySelector(".add-pts-btn");
+  if(addBtn) addBtn.onclick = function(){ act("addPoints"); };
 }
 
 function renderSide(){
@@ -921,8 +939,15 @@ function viewShop(){
 
   if(state.redeemed.length){
     h += '<h3 class="sec">📦 兑换记录</h3><ul class="rec-list">';
-    state.redeemed.slice().reverse().slice(0,10).forEach(function(r){
-      h += '<li><span>🎁</span> 兑换了《' + esc(r.name) + '》<span class="pts-tag minus">-' + r.cost + ' 分</span><span class="when">' + esc(r.date) + '</span></li>';
+    state.redeemed.slice().reverse().forEach(function(r, idx){
+      var realIdx = state.redeemed.length - 1 - idx;
+      var statusLabel = (r.status === "done") ? "已兑换" : "待兑换";
+      var statusClass = (r.status === "done") ? "done" : "pending";
+      h += '<li>';
+      h += '<div class="r-row"><span>🎁</span> <span class="r-name" data-rdetail="' + realIdx + '" style="cursor:pointer;text-decoration:underline;">' + esc(r.name) + '</span> <span class="r-status ' + statusClass + '" data-rdone="' + realIdx + '" style="cursor:pointer;">' + statusLabel + '</span><span class="pts-tag minus">-' + r.cost + ' 分</span><button class="r-del" data-rdel="' + realIdx + '" title="删除此记录">✕</button></div>';
+      if(r.note) h += '<span class="r-note">备注：' + esc(r.note) + '</span>';
+      h += '<span class="when">' + esc(r.date) + (r.time ? " " + esc(r.time) : "") + '</span>';
+      h += '</li>';
     });
     h += '</ul>';
   }
@@ -955,6 +980,15 @@ function bindMain(){
   });
   main.querySelectorAll("[data-redeem]").forEach(function(el){
     el.onclick = function(){ redeem(el.getAttribute("data-redeem")); };
+  });
+  main.querySelectorAll("[data-rdel]").forEach(function(el){
+    el.onclick = function(ev){ ev.stopPropagation(); deleteRedeem(el.getAttribute("data-rdel")); };
+  });
+  main.querySelectorAll("[data-rdone]").forEach(function(el){
+    el.onclick = function(ev){ ev.stopPropagation(); toggleRedeemStatus(el.getAttribute("data-rdone")); };
+  });
+  main.querySelectorAll("[data-rdetail]").forEach(function(el){
+    el.onclick = function(ev){ ev.stopPropagation(); viewRedeemDetail(el.getAttribute("data-rdetail")); };
   });
   main.querySelectorAll("[data-del]").forEach(function(el){
     el.onclick = function(ev){ ev.stopPropagation(); removeReward(el.getAttribute("data-del")); };
@@ -1083,10 +1117,52 @@ function redeem(id){
   if(state.points < r.cost){ toast("积分还不够哦，继续加油！"); return; }
   if(!confirm("确定用 " + r.cost + " 分兑换「" + r.name + "」吗？")) return;
   state.points -= r.cost;
-  state.redeemed.push({name:r.name, cost:r.cost, date:todayStr()});
+  state.redeemed.push({
+    id: "r_" + Date.now(),
+    name:r.name,
+    cost:r.cost,
+    date:todayStr(),
+    time: (function(){ var d=new Date(); return pad(d.getHours())+":"+pad(d.getMinutes()); })(),
+    status:"pending",
+    note:""
+  });
   pushHistory("redeem", "兑换「" + r.name + "」", 0);
   save(); renderAll();
   toast("兑换成功！记得找爸爸妈妈兑现哦 🎁", true);
+}
+function deleteRedeem(idx){
+  idx = parseInt(idx, 10);
+  if(idx < 0 || idx >= state.redeemed.length) return;
+  var item = state.redeemed[idx];
+  if(!confirm("确定删除兑换记录「" + item.name + "」吗？删除后积分不返还。")) return;
+  state.redeemed.splice(idx, 1);
+  save(); renderAll();
+  toast("已删除兑换记录", true);
+}
+function toggleRedeemStatus(idx){
+  idx = parseInt(idx, 10);
+  if(idx < 0 || idx >= state.redeemed.length) return;
+  var item = state.redeemed[idx];
+  item.status = (item.status === "done") ? "pending" : "done";
+  save(); renderAll();
+  toast(item.status === "done" ? "已标记为已兑换 ✅" : "已标记为待兑换", true);
+}
+function viewRedeemDetail(idx){
+  idx = parseInt(idx, 10);
+  if(idx < 0 || idx >= state.redeemed.length) return;
+  var item = state.redeemed[idx];
+  var statusLabel = (item.status === "done") ? "已兑换" : "待兑换";
+  var body = '<div style="margin-bottom:12px;"><b>奖励：</b>' + esc(item.name) + '</div>' +
+    '<div style="margin-bottom:12px;"><b>消耗积分：</b>⭐ ' + item.cost + ' 分</div>' +
+    '<div style="margin-bottom:12px;"><b>兑换时间：</b>' + esc(item.date) + (item.time ? " " + esc(item.time) : "") + '</div>' +
+    '<div style="margin-bottom:12px;"><b>当前状态：</b><span class="r-status ' + (item.status === "done" ? "done" : "pending") + '">' + statusLabel + '</span> <button class="side-btn" style="margin-left:8px;padding:4px 10px;font-size:12px;display:inline-flex;" data-rdone="' + idx + '" onclick="toggleRedeemStatus(' + idx + ');closeModal();renderAll();">切换状态</button></div>' +
+    '<label>备注（选填）</label><input type="text" id="mNote" maxlength="50" value="' + esc(item.note || "") + '" placeholder="填写备注，如已兑现时间、地点等">';
+  openModal("兑换记录详情", body, "保存", function(){
+    var note = document.getElementById("mNote").value.trim().slice(0,50);
+    state.redeemed[idx].note = note;
+    save(); renderAll(); closeModal();
+    toast("备注已保存 ✏️", true);
+  });
 }
 
 function pushHistory(type, text, pts){
