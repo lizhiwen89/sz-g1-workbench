@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>深圳一年级 · 阳光学习工作台</title>
+<title>深圳一年级 · 朵朵学习成长能量站</title>
 <style>
   :root{
     --purple-1:#7B5CD6;
@@ -264,7 +264,7 @@
 <body>
 
 <header>
-  <div class="logo"><span>🌈</span> 阳光学习工作台</div>
+  <div class="logo"><span>🌈</span> 朵朵学习成长能量站</div>
   <div class="header-right">
     <div class="name-box" id="nameBox" title="点击修改名字">
       <span id="nameText">宝贝</span><span class="edit">✏️</span>
@@ -285,7 +285,7 @@
 <script>
 "use strict";
 /* =========================================================
-   深圳小学一年级 · 阳光学习工作台
+   深圳小学一年级 · 朵朵学习成长能量站
    教材版本依据（深圳小学一年级上册主要教材）：
    - 语文：统编版（部编版）一年级上册（2024 秋新版）· 人民教育出版社
    - 数学：北师大版一年级上册（2024 新版）· 北京师范大学出版社（深圳主流）
@@ -753,7 +753,7 @@ function renderSide(){
   h += '<div class="nav-group" style="margin-top:10px;">生活</div>';
   h += '<button class="nav-item' + (currentView==="chores" ? " active" : "") + '" data-go="chores"><span class="ico">🧹</span> 日常家务</button>';
   h += '<div class="nav-group" style="margin-top:10px;">奖励</div>';
-  h += '<button class="nav-item' + (currentView==="shop" ? " active" : "") + '" data-go="shop"><span class="ico">🎁</span> 阳光兑换商店</button>';
+  h += '<button class="nav-item' + (currentView==="shop" ? " active" : "") + '" data-go="shop"><span class="ico">🎁</span> 朵朵兑换商店</button>';
   h += '<div class="side-foot">';
   h += '<button class="side-btn" data-act="export">💾 导出备份</button>';
   h += '<button class="side-btn green" data-act="import">📥 导入备份</button>';
@@ -900,7 +900,7 @@ function viewChores(){
 /* ---------- 商店 ---------- */
 function viewShop(){
   var h = "";
-  h += '<div class="page-head"><div class="page-title"><span class="ico">🎁</span> 阳光兑换商店</div></div>';
+  h += '<div class="page-head"><div class="page-title"><span class="ico">🎁</span> 朵朵兑换商店</div></div>';
   h += '<div class="shop-head"><div class="big-pts">我的积分：⭐ ' + state.points + ' 分</div></div>';
   h += '<div class="grid g-shop">';
   state.rewards.forEach(function(r){
@@ -930,7 +930,7 @@ function viewShop(){
 
 function footNote(){
   var d = new Date();
-  return '<div class="foot-note">深圳一年级 · 阳光学习工作台（本地离线版）— 数据仅保存在本浏览器，点击左下角可“导出备份”。教材版本以学校和实际课本为准，积分规则可自行约定。</div>';
+  return '<div class="foot-note">深圳一年级 · 朵朵学习成长能量站（本地离线版）— 数据仅保存在本浏览器，点击左下角可“导出备份”。教材版本以学校和实际课本为准，积分规则可自行约定。</div>';
 }
 
 /* ---------- 事件绑定 ---------- */
@@ -1152,7 +1152,7 @@ function closeModal(){ document.getElementById("modalWrap").innerHTML = ""; }
 /* ---------- 导出 / 导入 ---------- */
 function exportData(){
   var d = new Date();
-  var fn = "学习工作台备份-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()) + ".json";
+  var fn = "朵朵能量站备份-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()) + ".json";
   var blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
   var a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
