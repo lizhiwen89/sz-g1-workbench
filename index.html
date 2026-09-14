@@ -52,6 +52,8 @@
   .name-box .edit{font-size:13px;opacity:.9;cursor:pointer;}
   .name-box:hover{background:rgba(255,255,255,.26);}
   .pts-pill{background:linear-gradient(120deg,var(--green-1),var(--green-2));border-radius:999px;padding:6px 16px;font-weight:800;font-size:16px;box-shadow:0 4px 12px rgba(39,174,96,.45);display:flex;align-items:center;gap:6px;}
+  .add-pts-btn{background:#fff;border-radius:999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--green-1);box-shadow:0 2px 8px rgba(39,174,96,.35);transition:.15s;cursor:pointer;border:none;}
+  .add-pts-btn:hover{transform:scale(1.1);box-shadow:0 4px 14px rgba(39,174,96,.5);}
 
   /* ===== 布局 ===== */
   .layout{display:flex;min-height:calc(100vh - 66px);}
@@ -270,6 +272,7 @@
       <span id="nameText">宝贝</span><span class="edit">✏️</span>
     </div>
     <div class="pts-pill" id="ptsPill">⭐ <span id="ptsNum">0</span> 积分</div>
+    <button class="add-pts-btn" data-act="addPoints" title="手动增加积分">+</button>
   </div>
 </header>
 
@@ -1120,6 +1123,19 @@ function act(name){
   else if(name === "import") document.getElementById("importFile").click();
   else if(name === "addReward") addReward();
   else if(name === "addChore") addChore();
+  else if(name === "addPoints") addPoints();
+}
+function addPoints(){
+  openModal("手动增加积分", '<label>增加积分（正整数）</label><input type="number" id="mPts" min="1" max="999" value="10">',
+    "确认增加", function(){
+      var v = parseInt(document.getElementById("mPts").value, 10);
+      if(!v || v < 1 || v > 999){ toast("请输入 1~999 之间的整数"); return; }
+      state.points += v;
+      state.totalEarned += v;
+      pushHistory("other", "手动增加积分 +" + v, v);
+      save(); renderAll(); closeModal();
+      toast("成功增加 " + v + " 积分 ✨", true);
+    });
 }
 function addReward(){
   openModal("添加奖励",
